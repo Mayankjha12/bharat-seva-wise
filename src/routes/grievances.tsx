@@ -19,7 +19,6 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { SERVICES, DEMO_PROFILE } from "@/lib/data";
 import { submitGrievance, getCitizenRecords } from "@/lib/records.functions";
 import { getCitizenKey } from "@/lib/citizen";
-import type { Grievance } from "@/lib/types";
 import { toast } from "sonner";
 
 export const Route = createFileRoute("/grievances")({
