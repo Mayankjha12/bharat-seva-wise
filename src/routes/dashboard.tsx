@@ -8,8 +8,8 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { StatusBadge } from "@/components/status-badge";
 import { ServiceCard } from "@/components/service-card";
 import { DEMO_PROFILE, SERVICES } from "@/lib/data";
-import { supabase } from "@/integrations/supabase/client";
-import type { Application, Grievance } from "@/lib/types";
+import { getCitizenRecords } from "@/lib/records.functions";
+import { getCitizenKey } from "@/lib/citizen";
 
 export const Route = createFileRoute("/dashboard")({
   head: () => ({
@@ -28,31 +28,14 @@ export const Route = createFileRoute("/dashboard")({
 });
 
 function DashboardPage() {
-  const { data: applications, isLoading: loadingApps } = useQuery({
-    queryKey: ["my-applications", DEMO_PROFILE.id],
-    queryFn: async () => {
-      const { data, error } = await supabase
-        .from("applications")
-        .select("*")
-        .eq("citizen_id", DEMO_PROFILE.id)
-        .order("created_at", { ascending: false });
-      if (error) throw error;
-      return data as Application[];
-    },
+  const { data, isLoading } = useQuery({
+    queryKey: ["citizen-records"],
+    queryFn: () => getCitizenRecords({ data: getCitizenKey() }),
   });
-
-  const { data: grievances, isLoading: loadingGrv } = useQuery({
-    queryKey: ["grievances", DEMO_PROFILE.id],
-    queryFn: async () => {
-      const { data, error } = await supabase
-        .from("grievances")
-        .select("*")
-        .eq("citizen_id", DEMO_PROFILE.id)
-        .order("created_at", { ascending: false });
-      if (error) throw error;
-      return data as Grievance[];
-    },
-  });
+  const applications = data?.applications;
+  const grievances = data?.grievances;
+  const loadingApps = isLoading;
+  const loadingGrv = isLoading;
 
   const recommended = SERVICES.filter((s) =>
     ["Education", "Employment", "Women & Child Welfare"].includes(s.category),

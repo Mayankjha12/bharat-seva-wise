@@ -13,8 +13,9 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { getService, generateRef, DEMO_PROFILE, STATES, DISTRICTS_UP } from "@/lib/data";
-import { supabase } from "@/integrations/supabase/client";
+import { getService, DEMO_PROFILE, STATES, DISTRICTS_UP } from "@/lib/data";
+import { submitApplication } from "@/lib/records.functions";
+import { getCitizenKey } from "@/lib/citizen";
 import { toast } from "sonner";
 
 export const Route = createFileRoute("/apply/$serviceId")({
@@ -60,31 +61,27 @@ function ApplyPage() {
 
   async function submit() {
     setSubmitting(true);
-    const ref = generateRef("SV");
-    const { error } = await supabase.from("applications").insert({
-      ref,
-      citizen_id: DEMO_PROFILE.id,
-      citizen_name: form.name,
-      service_id: service.id,
-      service_name: service.name,
-      category: service.category,
-      district: form.district,
-      state: form.state,
-      status: "Submitted",
-      details: {
-        age_group: form.ageGroup,
-        employment: form.employment,
-        income: form.income,
-        documents_confirmed: Object.keys(uploaded).filter((k) => uploaded[k]),
-      },
-    });
-    setSubmitting(false);
-    if (error) {
+    try {
+      const { ref } = await submitApplication({
+        data: {
+          citizenKey: getCitizenKey(),
+          citizenName: form.name,
+          serviceId: service.id,
+          district: form.district,
+          state: form.state,
+          ageGroup: form.ageGroup,
+          employment: form.employment,
+          income: form.income,
+          documentsConfirmed: Object.keys(uploaded).filter((k) => uploaded[k]),
+        },
+      });
+      setSubmittedRef(ref);
+      toast.success(`Application ${ref} submitted`);
+    } catch {
       toast.error("Could not submit the application. Please try again.");
-      return;
+    } finally {
+      setSubmitting(false);
     }
-    setSubmittedRef(ref);
-    toast.success(`Application ${ref} submitted`);
   }
 
   if (submittedRef) {
