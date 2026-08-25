@@ -1,4 +1,5 @@
 import { createServerFn } from "@tanstack/react-start";
+import { z } from "zod";
 import {
   applicationInputSchema,
   grievanceInputSchema,
@@ -9,8 +10,6 @@ import {
   listCitizenRecords,
   getDepartmentOverview,
 } from "./records.server";
-
-const citizenKeySchema = grievanceInputSchema.shape.citizenKey;
 
 export const submitApplication = createServerFn({ method: "POST" })
   .inputValidator((input: unknown) => applicationInputSchema.parse(input))
@@ -25,7 +24,15 @@ export const trackApplication = createServerFn({ method: "GET" })
   .handler(async ({ data }) => findApplicationByRef(data));
 
 export const getCitizenRecords = createServerFn({ method: "GET" })
-  .inputValidator((input: unknown) => citizenKeySchema.parse(input))
+  .inputValidator((input: unknown) =>
+    z
+      .string()
+      .trim()
+      .min(8)
+      .max(64)
+      .regex(/^[A-Za-z0-9-]+$/, "Invalid citizen key")
+      .parse(input),
+  )
   .handler(async ({ data }) => listCitizenRecords(data));
 
 export const getDepartmentData = createServerFn({ method: "GET" }).handler(async () =>
