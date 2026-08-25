@@ -10,33 +10,154 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as DashboardRouteImport } from './routes/dashboard'
+import { Route as DepartmentRouteImport } from './routes/department'
+import { Route as EligibilityRouteImport } from './routes/eligibility'
+import { Route as GrievancesRouteImport } from './routes/grievances'
+import { Route as SignInRouteImport } from './routes/sign-in'
+import { Route as TrackRouteImport } from './routes/track'
+import { Route as ApplyServiceIdRouteImport } from './routes/apply.$serviceId'
+import { Route as ServicesIndexRouteImport } from './routes/services/index'
+import { Route as ServicesServiceIdRouteImport } from './routes/services/$serviceId'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const DashboardRoute = DashboardRouteImport.update({
+  id: '/dashboard',
+  path: '/dashboard',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const DepartmentRoute = DepartmentRouteImport.update({
+  id: '/department',
+  path: '/department',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const EligibilityRoute = EligibilityRouteImport.update({
+  id: '/eligibility',
+  path: '/eligibility',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const GrievancesRoute = GrievancesRouteImport.update({
+  id: '/grievances',
+  path: '/grievances',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const SignInRoute = SignInRouteImport.update({
+  id: '/sign-in',
+  path: '/sign-in',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const TrackRoute = TrackRouteImport.update({
+  id: '/track',
+  path: '/track',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ApplyServiceIdRoute = ApplyServiceIdRouteImport.update({
+  id: '/apply/$serviceId',
+  path: '/apply/$serviceId',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ServicesIndexRoute = ServicesIndexRouteImport.update({
+  id: '/services/',
+  path: '/services/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ServicesServiceIdRoute = ServicesServiceIdRouteImport.update({
+  id: '/services/$serviceId',
+  path: '/services/$serviceId',
+  getParentRoute: () => rootRouteImport,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/dashboard': typeof DashboardRoute
+  '/department': typeof DepartmentRoute
+  '/eligibility': typeof EligibilityRoute
+  '/grievances': typeof GrievancesRoute
+  '/sign-in': typeof SignInRoute
+  '/track': typeof TrackRoute
+  '/apply/$serviceId': typeof ApplyServiceIdRoute
+  '/services/$serviceId': typeof ServicesServiceIdRoute
+  '/services/': typeof ServicesIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/dashboard': typeof DashboardRoute
+  '/department': typeof DepartmentRoute
+  '/eligibility': typeof EligibilityRoute
+  '/grievances': typeof GrievancesRoute
+  '/sign-in': typeof SignInRoute
+  '/track': typeof TrackRoute
+  '/apply/$serviceId': typeof ApplyServiceIdRoute
+  '/services/$serviceId': typeof ServicesServiceIdRoute
+  '/services': typeof ServicesIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/dashboard': typeof DashboardRoute
+  '/department': typeof DepartmentRoute
+  '/eligibility': typeof EligibilityRoute
+  '/grievances': typeof GrievancesRoute
+  '/sign-in': typeof SignInRoute
+  '/track': typeof TrackRoute
+  '/apply/$serviceId': typeof ApplyServiceIdRoute
+  '/services/$serviceId': typeof ServicesServiceIdRoute
+  '/services/': typeof ServicesIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/'
+  fullPaths:
+    | '/'
+    | '/dashboard'
+    | '/department'
+    | '/eligibility'
+    | '/grievances'
+    | '/sign-in'
+    | '/track'
+    | '/apply/$serviceId'
+    | '/services/$serviceId'
+    | '/services/'
   fileRoutesByTo: FileRoutesByTo
-  to: '/'
-  id: '__root__' | '/'
+  to:
+    | '/'
+    | '/dashboard'
+    | '/department'
+    | '/eligibility'
+    | '/grievances'
+    | '/sign-in'
+    | '/track'
+    | '/apply/$serviceId'
+    | '/services/$serviceId'
+    | '/services'
+  id:
+    | '__root__'
+    | '/'
+    | '/dashboard'
+    | '/department'
+    | '/eligibility'
+    | '/grievances'
+    | '/sign-in'
+    | '/track'
+    | '/apply/$serviceId'
+    | '/services/$serviceId'
+    | '/services/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  DashboardRoute: typeof DashboardRoute
+  DepartmentRoute: typeof DepartmentRoute
+  EligibilityRoute: typeof EligibilityRoute
+  GrievancesRoute: typeof GrievancesRoute
+  SignInRoute: typeof SignInRoute
+  TrackRoute: typeof TrackRoute
+  ApplyServiceIdRoute: typeof ApplyServiceIdRoute
+  ServicesServiceIdRoute: typeof ServicesServiceIdRoute
+  ServicesIndexRoute: typeof ServicesIndexRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -48,11 +169,83 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/dashboard': {
+      id: '/dashboard'
+      path: '/dashboard'
+      fullPath: '/dashboard'
+      preLoaderRoute: typeof DashboardRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/department': {
+      id: '/department'
+      path: '/department'
+      fullPath: '/department'
+      preLoaderRoute: typeof DepartmentRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/eligibility': {
+      id: '/eligibility'
+      path: '/eligibility'
+      fullPath: '/eligibility'
+      preLoaderRoute: typeof EligibilityRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/grievances': {
+      id: '/grievances'
+      path: '/grievances'
+      fullPath: '/grievances'
+      preLoaderRoute: typeof GrievancesRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/sign-in': {
+      id: '/sign-in'
+      path: '/sign-in'
+      fullPath: '/sign-in'
+      preLoaderRoute: typeof SignInRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/track': {
+      id: '/track'
+      path: '/track'
+      fullPath: '/track'
+      preLoaderRoute: typeof TrackRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/apply/$serviceId': {
+      id: '/apply/$serviceId'
+      path: '/apply/$serviceId'
+      fullPath: '/apply/$serviceId'
+      preLoaderRoute: typeof ApplyServiceIdRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/services/': {
+      id: '/services/'
+      path: '/services'
+      fullPath: '/services/'
+      preLoaderRoute: typeof ServicesIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/services/$serviceId': {
+      id: '/services/$serviceId'
+      path: '/services/$serviceId'
+      fullPath: '/services/$serviceId'
+      preLoaderRoute: typeof ServicesServiceIdRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  DashboardRoute: DashboardRoute,
+  DepartmentRoute: DepartmentRoute,
+  EligibilityRoute: EligibilityRoute,
+  GrievancesRoute: GrievancesRoute,
+  SignInRoute: SignInRoute,
+  TrackRoute: TrackRoute,
+  ApplyServiceIdRoute: ApplyServiceIdRoute,
+  ServicesServiceIdRoute: ServicesServiceIdRoute,
+  ServicesIndexRoute: ServicesIndexRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
