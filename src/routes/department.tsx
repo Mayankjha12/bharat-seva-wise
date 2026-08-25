@@ -29,8 +29,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { supabase } from "@/integrations/supabase/client";
-import type { Application, Grievance } from "@/lib/types";
+import { getDepartmentData } from "@/lib/records.functions";
 import { toast } from "sonner";
 
 export const Route = createFileRoute("/department")({
@@ -72,31 +71,15 @@ function DepartmentPage() {
   const [loggedIn, setLoggedIn] = useState(false);
   const [email, setEmail] = useState("");
 
-  const { data: applications, isLoading: loadingApps } = useQuery({
-    queryKey: ["dept-applications"],
+  const { data, isLoading } = useQuery({
+    queryKey: ["dept-overview"],
     enabled: loggedIn,
-    queryFn: async () => {
-      const { data, error } = await supabase
-        .from("applications")
-        .select("*")
-        .order("created_at", { ascending: false });
-      if (error) throw error;
-      return data as Application[];
-    },
+    queryFn: () => getDepartmentData(),
   });
-
-  const { data: grievances, isLoading: loadingGrv } = useQuery({
-    queryKey: ["dept-grievances"],
-    enabled: loggedIn,
-    queryFn: async () => {
-      const { data, error } = await supabase
-        .from("grievances")
-        .select("*")
-        .order("created_at", { ascending: false });
-      if (error) throw error;
-      return data as Grievance[];
-    },
-  });
+  const applications = data?.applications;
+  const grievances = data?.grievances;
+  const loadingApps = isLoading;
+  const loadingGrv = isLoading;
 
   if (!loggedIn) {
     return (

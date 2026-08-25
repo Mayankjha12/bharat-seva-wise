@@ -16,8 +16,9 @@ import {
 import { StatusBadge } from "@/components/status-badge";
 import { StatusTimeline } from "@/components/status-timeline";
 import { Skeleton } from "@/components/ui/skeleton";
-import { SERVICES, generateRef, DEMO_PROFILE } from "@/lib/data";
-import { supabase } from "@/integrations/supabase/client";
+import { SERVICES, DEMO_PROFILE } from "@/lib/data";
+import { submitGrievance, getCitizenRecords } from "@/lib/records.functions";
+import { getCitizenKey } from "@/lib/citizen";
 import type { Grievance } from "@/lib/types";
 import { toast } from "sonner";
 
@@ -69,20 +70,16 @@ function GrievancesPage() {
   const [category, setCategory] = useState("");
   const [description, setDescription] = useState("");
   const [submitting, setSubmitting] = useState(false);
-  const [justSubmitted, setJustSubmitted] = useState<Grievance | null>(null);
+  const [justSubmitted, setJustSubmitted] = useState<{
+    ref: string;
+    status: string;
+  } | null>(null);
 
-  const { data: grievances, isLoading, refetch } = useQuery({
-    queryKey: ["grievances", DEMO_PROFILE.id],
-    queryFn: async () => {
-      const { data, error } = await supabase
-        .from("grievances")
-        .select("*")
-        .eq("citizen_id", DEMO_PROFILE.id)
-        .order("created_at", { ascending: false });
-      if (error) throw error;
-      return data as Grievance[];
-    },
+  const { data, isLoading, refetch } = useQuery({
+    queryKey: ["citizen-records"],
+    queryFn: () => getCitizenRecords({ data: getCitizenKey() }),
   });
+  const grievances = data?.grievances;
 
   async function submit() {
     if (!service || !category || !description.trim()) {
@@ -90,33 +87,28 @@ function GrievancesPage() {
       return;
     }
     setSubmitting(true);
-    const ref = generateRef("GRV");
-    const { data, error } = await supabase
-      .from("grievances")
-      .insert({
-        ref,
-        citizen_id: DEMO_PROFILE.id,
-        citizen_name: DEMO_PROFILE.name,
-        service,
-        category,
-        description: description.trim(),
-        status: "Assigned to Department",
-        priority: "Normal",
-      })
-      .select()
-      .single();
-    setSubmitting(false);
-    if (error) {
+    try {
+      const created = await submitGrievance({
+        data: {
+          citizenKey: getCitizenKey(),
+          citizenName: DEMO_PROFILE.name,
+          service,
+          category,
+          description: description.trim(),
+        },
+      });
+      setJustSubmitted(created);
+      setShowForm(false);
+      setService("");
+      setCategory("");
+      setDescription("");
+      toast.success(`Grievance ${created.ref} registered`);
+      void refetch();
+    } catch {
       toast.error("Could not submit the grievance. Please try again.");
-      return;
+    } finally {
+      setSubmitting(false);
     }
-    setJustSubmitted(data as Grievance);
-    setShowForm(false);
-    setService("");
-    setCategory("");
-    setDescription("");
-    toast.success(`Grievance ${ref} registered`);
-    void refetch();
   }
 
   return (
