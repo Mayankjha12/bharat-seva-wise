@@ -8,8 +8,7 @@ import { Input } from "@/components/ui/input";
 import { StatusBadge } from "@/components/status-badge";
 import { StatusTimeline } from "@/components/status-timeline";
 import { Skeleton } from "@/components/ui/skeleton";
-import { supabase } from "@/integrations/supabase/client";
-import type { Application } from "@/lib/types";
+import { trackApplication } from "@/lib/records.functions";
 
 export const Route = createFileRoute("/track")({
   validateSearch: (search: Record<string, unknown>): { ref?: string | undefined } => ({
@@ -63,15 +62,7 @@ function TrackPage() {
   const { data, isLoading, isFetched } = useQuery({
     queryKey: ["application", searchRef],
     enabled: searchRef.length > 0,
-    queryFn: async () => {
-      const { data, error } = await supabase
-        .from("applications")
-        .select("*")
-        .eq("ref", searchRef.trim().toUpperCase())
-        .maybeSingle();
-      if (error) throw error;
-      return data as Application | null;
-    },
+    queryFn: () => trackApplication({ data: searchRef.trim().toUpperCase() }),
   });
 
   const current = data ? stageIndex(data.status) : 0;
